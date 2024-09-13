@@ -9,10 +9,16 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.conveyor)
 }
 
+version = libs.versions.systemVersion.get()
+
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of("21"))
+        vendor.set(JvmVendorSpec.JETBRAINS)
+    }
     androidTarget {
         //https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -90,6 +96,12 @@ kotlin {
 
     }
 }
+dependencies {
+    linuxAmd64(compose.desktop.linux_x64)
+    macAmd64(compose.desktop.macos_x64)
+    macAarch64(compose.desktop.macos_arm64)
+    windowsAmd64(compose.desktop.windows_x64)
+}
 
 android {
     namespace = "br.com.kaskin.roteirizador"
@@ -100,8 +112,8 @@ android {
         targetSdk = 34
 
         applicationId = "br.com.kaskin.roteirizador.androidApp"
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = libs.versions.versionCode.get().toInt()
+        versionName = libs.versions.systemVersion.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -133,8 +145,19 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "br.com.kaskin.roteirizador.desktopApp"
-            packageVersion = "1.0.0"
+            packageName = "br-com-kaskin-roteirizador"
+            packageVersion = libs.versions.systemVersion.get()
         }
     }
+}
+
+configurations.all {
+    attributes {
+        // https://github.com/JetBrains/compose-jb/issues/1404#issuecomment-1146894731
+        attribute(Attribute.of("ui", String::class.java), "awt")
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEach {
+    jvmTargetValidationMode.set(org.jetbrains.kotlin.gradle.dsl.jvm.JvmTargetValidationMode.WARNING)
 }

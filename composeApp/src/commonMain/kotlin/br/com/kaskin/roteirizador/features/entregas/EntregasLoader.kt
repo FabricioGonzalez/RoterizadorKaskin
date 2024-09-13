@@ -1,6 +1,7 @@
 package br.com.kaskin.roteirizador.features.entregas
 
 import br.com.kaskin.roteirizador.features.remessas.CostumerListItem
+import br.com.kaskin.roteirizador.shared.ApiConstants
 import br.com.kaskin.roteirizador.shared.extensions.format
 import br.com.kaskin.roteirizador.shared.extensions.now
 import io.github.aakira.napier.DebugAntilog
@@ -28,7 +29,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class EntregasLoader {
-    private val url = "http://localhost:5031/api/v1"
+    private val url = ApiConstants.ApiUrl
 
     private val client = HttpClient {
         install(HttpTimeout) {
@@ -58,8 +59,8 @@ class EntregasLoader {
                 val result = client.get(url) {
                     url {
                         appendPathSegments("deliveries", encodeSlash = true)
-                        parameters.append("dataInicio", dataInicio.format())
-                        parameters.append("dataFim", dataFim.format())
+                        parameters.append("inicial", dataInicio.format())
+                        parameters.append("final", dataFim.format())
                     }
                 }
                 if (result.status == HttpStatusCode.OK)

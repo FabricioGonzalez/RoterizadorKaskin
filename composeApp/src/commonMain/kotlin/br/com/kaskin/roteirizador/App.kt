@@ -81,7 +81,7 @@ internal fun App() = AppTheme {
     }
 
     PermanentNavigationDrawer(modifier = Modifier.fillMaxSize(), drawerContent = {
-        Column {
+        Column(modifier=Modifier.width(90.dp)) {
             navigations.forEach { navigation ->
                 val isSelected by derivedStateOf { currentRoute == navigation.navigationPoint::class.qualifiedName }
                 NavigationRailItem(isSelected, icon = {

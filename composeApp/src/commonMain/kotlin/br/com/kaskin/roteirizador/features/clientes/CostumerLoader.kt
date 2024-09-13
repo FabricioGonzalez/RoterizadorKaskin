@@ -1,5 +1,6 @@
 package br.com.kaskin.roteirizador.features.clientes
 
+import br.com.kaskin.roteirizador.shared.ApiConstants
 import br.com.kaskin.roteirizador.shared.extensions.format
 import br.com.kaskin.roteirizador.shared.extensions.now
 import io.github.aakira.napier.DebugAntilog
@@ -19,7 +20,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDateTime
 
 class CostumerLoader {
-    private val url = "http://localhost:5031/api/v1"
+    private val url = ApiConstants.ApiUrl
 
     private val client = HttpClient {
         install(HttpTimeout) {

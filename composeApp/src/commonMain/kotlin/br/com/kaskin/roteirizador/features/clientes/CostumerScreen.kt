@@ -1,5 +1,6 @@
 package br.com.kaskin.roteirizador.features.clientes
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardOptions
@@ -12,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 
@@ -24,8 +26,8 @@ fun CostumerScreen(modifier: Modifier = Modifier) {
 
     val scope = rememberCoroutineScope()
 
-    Column {
-        Row {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button({
                 scope.launch {
                     costumerLoader.syncCostumers()
@@ -42,7 +44,7 @@ fun CostumerScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        Row {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(
                 value = codigoCliente,
                 onValueChange = onCodigoChanged,

@@ -1,5 +1,6 @@
 package br.com.kaskin.roteirizador.features.remessas
 
+import br.com.kaskin.roteirizador.shared.ApiConstants
 import br.com.kaskin.roteirizador.shared.extensions.format
 import br.com.kaskin.roteirizador.shared.extensions.now
 import io.github.aakira.napier.DebugAntilog
@@ -27,7 +28,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class RemessaLoader {
-    private val url = "http://localhost:5031/api/v1"
+    private val url = ApiConstants.ApiUrl
 
     private val client = HttpClient {
         install(HttpTimeout) {
@@ -77,16 +78,13 @@ class RemessaLoader {
         try {
             withContext(Dispatchers.IO) {
                 val body = Json.encodeToString(orders)
-                val response = client.post(url) {
+                client.post(url) {
                     url {
                         appendPathSegments("orders", "sync", "remessas", encodeSlash = true)
                     }
                     contentType(ContentType.Application.Json)
                     setBody(body)
                 }
-
-                println(response.status)
-                println(body)
             }
         } catch (e: Exception) {
             println(e)

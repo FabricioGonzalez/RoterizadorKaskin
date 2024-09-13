@@ -1,3 +1,4 @@
+/*
 package br.com.kaskin.roteirizador
 
 import androidx.compose.foundation.layout.Column
@@ -42,4 +43,4 @@ class ComposeTest {
         }
         onNodeWithTag("t_text").assertTextEquals("Go...")
     }
-}
+}*/

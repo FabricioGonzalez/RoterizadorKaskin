@@ -80,7 +80,6 @@ fun main() {
             }, onError = {
                 it?.printStackTrace()
             }, onRestartRequired = {
-                /*restartRequired = true*/
             })
         }
         DisposableEffect(Unit) {
@@ -111,7 +110,9 @@ fun main() {
 
                 TitleBarView(
                     theme = theme,
-                    appBar = {},
+                    appBar = {
+
+                    },
                     changeTheme = {
                         theme = when (theme) {
                             IntUiThemes.Light -> IntUiThemes.Dark
@@ -143,34 +144,34 @@ fun DecoratedWindowScope.TitleBarView(
         Row(Modifier.fillMaxWidth()) {
             Text(title)
             appBar()
-        }
 
-        Row(Modifier.align(Alignment.End)) {
-            Tooltip({
-                when (theme) {
-                    IntUiThemes.Light -> Text("Switch to light theme with light header")
-                    IntUiThemes.Dark, IntUiThemes.System -> Text("Switch to light theme")
-                }
-            }) {
-                IconButton(onClick = { changeTheme() }, Modifier.size(40.dp).padding(5.dp)) {
+            Row(Modifier.align(Alignment.End)) {
+                Tooltip({
                     when (theme) {
-                        IntUiThemes.Light -> Icon(
-                            imageVector = Icons.Rounded.LightMode,
-                            tint = Color.White,
-                            contentDescription = "Themes",
-                        )
+                        IntUiThemes.Light -> Text("Switch to light theme with light header")
+                        IntUiThemes.Dark, IntUiThemes.System -> Text("Switch to light theme")
+                    }
+                }) {
+                    IconButton(onClick = { changeTheme() }, Modifier.size(40.dp).padding(5.dp)) {
+                        when (theme) {
+                            IntUiThemes.Light -> Icon(
+                                imageVector = Icons.Rounded.LightMode,
+                                tint = Color.White,
+                                contentDescription = "Themes",
+                            )
 
-                        IntUiThemes.Dark -> Icon(
-                            imageVector = Icons.Outlined.ModeNight,
-                            tint = Color.White,
-                            contentDescription = "Themes",
-                        )
+                            IntUiThemes.Dark -> Icon(
+                                imageVector = Icons.Outlined.ModeNight,
+                                tint = Color.White,
+                                contentDescription = "Themes",
+                            )
 
-                        IntUiThemes.System -> Icon(
-                            imageVector = Icons.Rounded.Mode,
-                            tint = Color.White,
-                            contentDescription = "Themes",
-                        )
+                            IntUiThemes.System -> Icon(
+                                imageVector = Icons.Rounded.Mode,
+                                tint = Color.White,
+                                contentDescription = "Themes",
+                            )
+                        }
                     }
                 }
             }
