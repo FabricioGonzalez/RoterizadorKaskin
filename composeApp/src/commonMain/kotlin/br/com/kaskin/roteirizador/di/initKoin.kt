@@ -12,10 +12,8 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
         appDeclaration()
         modules(
             datastoreModule,
-            /*viewModelDependencies,
-            usecaseDependecies,
-            dataDependencies,
-            apolloDependencies,*/
+            viewModelModule,
+            dataModule,
             dispatcherModule
         )
     }

@@ -14,13 +14,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import br.com.kaskin.roteirizador.shared.extensions.now
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
-fun CostumerScreen(modifier: Modifier = Modifier) {
-
-    val costumerLoader = remember { CostumerLoader() }
+fun CostumerScreen(modifier: Modifier = Modifier, viewModel: ClientesViewModel = koinViewModel()) {
 
     val (codigoCliente, onCodigoChanged) = remember { mutableStateOf("") }
 
@@ -30,14 +31,17 @@ fun CostumerScreen(modifier: Modifier = Modifier) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button({
                 scope.launch {
-                    costumerLoader.syncCostumers()
+                    viewModel.handleIntent(ClientsViewIntents.SyncCostumers(
+                        dataInicio = LocalDateTime.now(),
+                        dataFim = LocalDateTime.now(),
+                    ))
                 }
             }) {
                 Text("Sincronizar Clientes")
             }
             Button({
                 scope.launch {
-                    costumerLoader.cleanBase()
+                    viewModel.handleIntent(ClientsViewIntents.CleanCostumers)
                 }
             }) {
                 Text("Limpar Base")
@@ -55,7 +59,7 @@ fun CostumerScreen(modifier: Modifier = Modifier) {
             Button({
                 scope.launch {
                     codigoCliente.toIntOrNull()?.let {
-                        costumerLoader.syncCostumer(it)
+                        viewModel.handleIntent(ClientsViewIntents.SyncCostumer(it))
                     }
                 }
             }) {
@@ -64,7 +68,7 @@ fun CostumerScreen(modifier: Modifier = Modifier) {
             Button({
                 scope.launch {
                     codigoCliente.toIntOrNull()?.let {
-                        costumerLoader.updateCostumer(it)
+                        viewModel.handleIntent(ClientsViewIntents.UpdateCostumer(it))
                     }
                 }
             }) {

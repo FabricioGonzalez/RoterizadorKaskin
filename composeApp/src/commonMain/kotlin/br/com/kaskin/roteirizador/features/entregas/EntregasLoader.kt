@@ -1,54 +1,18 @@
 package br.com.kaskin.roteirizador.features.entregas
 
-import br.com.kaskin.roteirizador.features.remessas.CostumerListItem
-import br.com.kaskin.roteirizador.shared.ApiConstants
+import br.com.kaskin.roteirizador.data.ApiConnector
 import br.com.kaskin.roteirizador.shared.extensions.format
 import br.com.kaskin.roteirizador.shared.extensions.now
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.appendPathSegments
-import io.ktor.http.contentType
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
-class EntregasLoader {
-    private val url = ApiConstants.ApiUrl
-
-    private val client = HttpClient {
-        install(HttpTimeout) {
-            requestTimeoutMillis = 10000
-        }
-        install(Logging) {
-            logger = object : Logger {
-                override fun log(message: String) {
-                    Napier.v("HTTP Client", null, message)
-                }
-            }
-            level = LogLevel.ALL
-        }.also { Napier.base(DebugAntilog()) }
-
-        install(ContentNegotiation) {
-            json() // Example: Register JSON content transformation
-            // Add more transformations as needed for other content types
-        }
-    }
+class EntregasLoader(private val connector: ApiConnector) {
 
     suspend fun loadDeliveries(
         dataInicio: LocalDateTime = LocalDateTime.now(),
@@ -56,7 +20,7 @@ class EntregasLoader {
     ): List<Delivery> {
         return try {
             withContext(Dispatchers.IO) {
-                val result = client.get(url) {
+                val result = connector.get {
                     url {
                         appendPathSegments("deliveries", encodeSlash = true)
                         parameters.append("inicial", dataInicio.format())
@@ -75,10 +39,10 @@ class EntregasLoader {
 
     suspend fun syncDelivery(
         delivery: Int
-    ) {
-        try {
+    ): Result<Unit> {
+        return try {
             withContext(Dispatchers.IO) {
-                client.get(url) {
+                val response = connector.get {
                     url {
                         appendPathSegments(
                             "deliveries",
@@ -88,9 +52,11 @@ class EntregasLoader {
                         )
                     }
                 }
+                if (response.status.isSuccess()) Result.success(Unit)
+                else Result.failure(Exception("Vazio"))
             }
         } catch (e: Exception) {
-            println(e)
+            Result.failure(e)
         }
     }
 

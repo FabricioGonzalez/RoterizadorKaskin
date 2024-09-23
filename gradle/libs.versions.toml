@@ -4,23 +4,24 @@ kotlin = "2.0.20"
 compose = "1.7.0-beta02"
 agp = "8.5.2"
 androidx-activityCompose = "1.9.2"
-androidx-uiTest = "1.7.1"
+androidx-uiTest = "1.7.2"
 napier = "2.7.1"
-kotlinx-coroutines = "1.9.0-RC.2"
-ktor = "3.0.0-beta-2"
+kotlinx-coroutines = "1.9.0"
+ktor = "3.0.0-rc-1"
 kotlinx-serialization = "1.7.2"
 kotlinx-datetime = "0.6.1"
 koin = "4.0.0-RC2"
-webview = "1.9.40-alpha01"
+webview = "1.9.20"
 adaptive = "1.0.0-alpha03"
 lifecycle = "2.8.2"
 navigation = "2.8.0-alpha10"
 okio = "3.9.0"
 materialKolor = "1.6.1"
 jewel_version = "0.12.0"
+datastore = "1.1.1"
 
-systemVersion = "1.0.0"
-versionCode = "1"
+systemVersion = "1.0.2"
+versionCode = "3"
 
 [libraries]
 
@@ -45,9 +46,12 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+
+datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
-
 
 jewel = { module = "org.jetbrains.jewel:jewel-int-ui-standalone", version.ref = "jewel_version" }
 jewel-decorated = { module = "org.jetbrains.jewel:jewel-int-ui-decorated-window", version.ref = "jewel_version" }

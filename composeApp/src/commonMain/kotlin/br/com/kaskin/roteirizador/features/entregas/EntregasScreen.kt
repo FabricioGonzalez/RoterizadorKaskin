@@ -27,6 +27,7 @@ import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaf
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +35,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.kaskin.roteirizador.designsystem.organisms.DateTimePicker
+import br.com.kaskin.roteirizador.features.clientes.ClientesViewModel
 import br.com.kaskin.roteirizador.features.remessas.CostumerListItem
 import br.com.kaskin.roteirizador.features.remessas.RemessaLoader
 import br.com.kaskin.roteirizador.shared.extensions.format
@@ -44,19 +47,18 @@ import com.seanproctor.datatable.DataColumn
 import com.seanproctor.datatable.material3.DataTable
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun EntregasScreen(modifier: Modifier = Modifier) {
-    val entregasLoader = remember { EntregasLoader() }
+fun EntregasScreen(modifier: Modifier = Modifier, viewModel: EntregasViewModel = koinViewModel()) {
 
-    val entregas = remember { mutableStateListOf<Delivery>() }
+    val entregas by viewModel.entregas.collectAsStateWithLifecycle()
     val selectedEntregas = remember { mutableStateListOf<Int>() }
     val (allSelected, allSelectedChanged) = remember { mutableStateOf(false) }
 
     val dataInicioPickerState = rememberDatePickerState()
     val dataFimPickerState = rememberDatePickerState()
-    val scope = rememberCoroutineScope()
 
     val scaffoldNavigation = rememberSupportingPaneScaffoldNavigator()
 
@@ -76,18 +78,15 @@ fun EntregasScreen(modifier: Modifier = Modifier) {
                             DateTimePicker(datePickerState = dataInicioPickerState)
                             DateTimePicker(datePickerState = dataFimPickerState)
 
-                            Button({
-                                scope.launch {
-                                    entregas.addAll(
-                                        entregasLoader.loadDeliveries(
-                                            dataInicio = dataInicioPickerState.selectedDateMillis?.toDateTime()
-                                                ?: LocalDateTime.now(),
-                                            dataFimPickerState.selectedDateMillis?.toDateTime()
-                                                ?: LocalDateTime.now()
-                                        )
-
+                            Button(onClick = {
+                                viewModel.handleIntent(
+                                    EntregasViewIntents.loadDeliveries(
+                                        dataInicio = dataInicioPickerState.selectedDateMillis?.toDateTime()
+                                            ?: LocalDateTime.now(),
+                                        dataFim = dataFimPickerState.selectedDateMillis?.toDateTime()
+                                            ?: LocalDateTime.now()
                                     )
-                                }
+                                )
                             }) {
                                 Text("Buscar")
                             }
@@ -95,11 +94,11 @@ fun EntregasScreen(modifier: Modifier = Modifier) {
 
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Button({
-                                scope.launch {
-                                    selectedEntregas.forEach { delivery ->
-                                        entregasLoader.syncDelivery(delivery)
-                                    }
-                                }
+                                viewModel.handleIntent(
+                                    EntregasViewIntents.syncDeliveries(
+                                        selectedEntregas
+                                    )
+                                )
                             }) {
                                 Text("Sincronizar")
                             }
@@ -173,7 +172,7 @@ fun EntregasScreen(modifier: Modifier = Modifier) {
             }
         },
         supportingPane = {
-            AnimatedPane {
+            AnimatedPane(Modifier.preferredWidth(300.dp)) {
                 Surface(color = MaterialTheme.colorScheme.surfaceColorAtElevation(24.dp)) {
                     Column {
                         TopAppBar(colors = TopAppBarDefaults.topAppBarColors(

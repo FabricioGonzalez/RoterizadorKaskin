@@ -1,7 +1,5 @@
 package br.com.kaskin.roteirizador
 
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
@@ -11,13 +9,9 @@ import androidx.compose.material.icons.rounded.Storage
 import androidx.compose.material.icons.rounded.Summarize
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,18 +21,16 @@ import br.com.kaskin.roteirizador.features.clientes.CostumerScreen
 import br.com.kaskin.roteirizador.features.entregas.EntregasScreen
 import br.com.kaskin.roteirizador.features.remessas.RemessasScreen
 import br.com.kaskin.roteirizador.features.roteirizador.RoteirizadorScreen
+import br.com.kaskin.roteirizador.features.settings.SettingsScreen
 import br.com.kaskin.roteirizador.shared.AppBarState
-import roterizador_kaskin.composeapp.generated.resources.*
+import br.com.kaskin.roteirizador.shared.snackbar.ObserveAsEvents
+import br.com.kaskin.roteirizador.shared.snackbar.SnackbarController
 import br.com.kaskin.roteirizador.theme.AppTheme
-import br.com.kaskin.roteirizador.theme.LocalThemeIsDark
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import org.jetbrains.compose.resources.Font
-import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.resources.vectorResource
 
 @Composable
-internal fun App() = AppTheme {
+internal fun App(isDark: Boolean) = AppTheme(isDark = isDark) {
     val (appBarState, onAppStateChanged) = remember {
         mutableStateOf(AppBarState())
     }
@@ -77,11 +69,16 @@ internal fun App() = AppTheme {
                     navController.navigate(NavigationPoints.Roteirizador)
                 }, icon = Icons.Rounded.Home
             ),
+            NavItem(
+                name = "Configurações", navigationPoint = NavigationPoints.Settings, onClick = {
+                    navController.navigate(NavigationPoints.Settings)
+                }, icon = Icons.Rounded.Settings
+            ),
         )
     }
 
     PermanentNavigationDrawer(modifier = Modifier.fillMaxSize(), drawerContent = {
-        Column(modifier=Modifier.width(90.dp)) {
+        Column(modifier = Modifier.width(96.dp).padding(4.dp)) {
             navigations.forEach { navigation ->
                 val isSelected by derivedStateOf { currentRoute == navigation.navigationPoint::class.qualifiedName }
                 NavigationRailItem(isSelected, icon = {
@@ -91,14 +88,36 @@ internal fun App() = AppTheme {
                     )
                 }, onClick = {
                     navigation.onClick()
-                }, label = { Text(text = navigation.name) })
+                }, label = { Text(text = navigation.name, textAlign = TextAlign.Center) })
             }
         }
     }) {
+        val snackbarHostState = remember {
+            SnackbarHostState()
+        }
+        val scope = rememberCoroutineScope()
+
+        ObserveAsEvents(flow = SnackbarController.events, key1 = snackbarHostState) { event ->
+            scope.launch {
+                snackbarHostState.currentSnackbarData?.dismiss()
+
+                snackbarHostState.showSnackbar(
+                    message = event.message,
+                    actionLabel = event.action?.name
+                )
+                    .let {
+                        if (it == SnackbarResult.ActionPerformed) {
+                            event.action?.action?.invoke()
+                        }
+                    }
+            }
+        }
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = appBarState.topAppBar ?: {},
-            snackbarHost = appBarState.snackbarHost ?: {},
+            snackbarHost = {
+                SnackbarHost(snackbarHostState)
+            },
             floatingActionButton = appBarState.floatActionButton ?: {},
             floatingActionButtonPosition = appBarState.floatActionButtonPosition ?: FabPosition.End
         ) { innerPadding ->
@@ -119,6 +138,9 @@ internal fun App() = AppTheme {
                 composable<NavigationPoints.Remessas> {
                     RemessasScreen()
                 }
+                composable<NavigationPoints.Settings> {
+                    SettingsScreen()
+                }
             }
         }
     }
@@ -136,6 +158,9 @@ sealed interface NavigationPoints {
 
     @Serializable
     data object Roteirizador : NavigationPoints
+
+    @Serializable
+    data object Settings : NavigationPoints
 }
 
 data class NavItem(

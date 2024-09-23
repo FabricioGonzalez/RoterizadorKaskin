@@ -48,6 +48,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.napier)
             implementation(libs.kotlinx.coroutines.core)
+            api(libs.webview)
             implementation(libs.ktor.core)
             implementation(libs.ktor.serialization.json)
             implementation(libs.ktor.content.negociation)
@@ -56,6 +57,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
             implementation(libs.material3.adaptive.navigation)
             implementation(libs.material3.adaptive.layout)
             implementation(libs.material3.adaptive)
@@ -64,8 +66,9 @@ kotlin {
             implementation(libs.compose.navigation)
             implementation(libs.okio)
             implementation(libs.material.kolor)
+            implementation(libs.datastore.preferences)
+            implementation(libs.datastore)
             //implementation(libs.material3.adaptive.navigation.suite)
-            api(libs.webview)
         }
 
         commonTest.dependencies {
@@ -83,11 +86,14 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            implementation(compose.desktop.common)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.ktor.content.negociation)
             implementation(libs.jewel)
             implementation(libs.jewel.decorated)
+            api(libs.webview)
         }
 
         iosMain.dependencies {
@@ -142,9 +148,9 @@ compose.desktop {
             jvmArgs("--add-opens", "java.desktop/sun.lwawt=ALL-UNNAMED")
             jvmArgs("--add-opens", "java.desktop/sun.lwawt.macosx=ALL-UNNAMED")
         }
-
+        version = libs.versions.systemVersion.get()
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Msi, TargetFormat.Deb)
             packageName = "br-com-kaskin-roteirizador"
             packageVersion = libs.versions.systemVersion.get()
         }

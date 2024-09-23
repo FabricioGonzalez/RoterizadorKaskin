@@ -32,6 +32,7 @@ dependencyResolutionManagement {
         maven("https://packages.jetbrains.team/maven/p/kpm/public/")
         maven("https://jogamp.org/deployment/maven")
         mavenCentral()
+
     }
 }
 include(":composeApp")

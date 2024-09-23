@@ -11,10 +11,11 @@ class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent { App() }
+        setContent { App(isDark) }
     }
 }
 
 @Preview
 @Composable
-fun AppPreview() { App() }
+fun AppPreview() { App(isDark)
+}

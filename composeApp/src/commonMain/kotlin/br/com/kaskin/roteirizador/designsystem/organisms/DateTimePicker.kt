@@ -25,32 +25,32 @@ import br.com.kaskin.roteirizador.shared.extensions.toDateTime
 @Composable
 fun DateTimePicker(
     modifier: Modifier = Modifier,
-    datePickerState: DatePickerState = rememberDatePickerState()
+    datePickerState: DatePickerState = rememberDatePickerState(),
+    label: @Composable (() -> Unit)? = null
 ) {
     val (show, onShowChanged) = remember { mutableStateOf(false) }
 
     if (show) DatePickerDialog(onDismissRequest = {
         onShowChanged(false)
     }, confirmButton = {
-       TextButton({
-           onShowChanged(false)
-       }) {
-           Text("Confirmar")
-       }
+        TextButton({
+            onShowChanged(false)
+        }) {
+            Text("Confirmar")
+        }
     }) {
         DatePicker(datePickerState)
     }
-
-    Box(modifier) {
-        OutlinedTextField(datePickerState.selectedDateMillis?.toDateTime()?.formatView() ?: "", {},
-            trailingIcon = {
-                IconButton({
-                    onShowChanged(true)
-                }) {
-                    Icon(Icons.Rounded.CalendarViewDay, null)
-                }
-            })
-    }
-
-
+    OutlinedTextField(
+        modifier = modifier,
+        value = datePickerState.selectedDateMillis?.toDateTime()?.formatView() ?: "",
+        onValueChange = {},
+        label = label,
+        trailingIcon = {
+            IconButton({
+                onShowChanged(true)
+            }) {
+                Icon(Icons.Rounded.CalendarViewDay, null)
+            }
+        })
 }

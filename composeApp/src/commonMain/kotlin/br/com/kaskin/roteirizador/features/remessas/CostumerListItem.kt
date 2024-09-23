@@ -13,5 +13,6 @@ data class CostumerListItem(
     val orderValue: Double,
     val paymentMethodCode: Int,
     val paymentName: String,
-    val vendedor: String
+    val vendedor: String,
+    /*val items:List<ProductItem>*/
 )
