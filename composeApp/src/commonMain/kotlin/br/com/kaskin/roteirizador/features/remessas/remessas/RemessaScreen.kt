@@ -1,4 +1,4 @@
-package br.com.kaskin.roteirizador.features.remessas
+package br.com.kaskin.roteirizador.features.remessas.remessas
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,39 +9,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Filter
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.layout.AdaptStrategy
 import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
-import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
-import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
-import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldDefaults
-import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldAdaptStrategies
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldDestinationItem
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
-import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirectiveWithTwoPanesOnMediumWidth
-import androidx.compose.material3.adaptive.layout.calculateThreePaneScaffoldValue
-import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.surfaceColorAtElevation
@@ -51,7 +34,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,9 +47,6 @@ import br.com.kaskin.roteirizador.shared.uistate.ManagementResourceUiState
 import br.com.kaskin.roteirizador.shared.uistate.ResourceUiState
 import com.seanproctor.datatable.DataColumn
 import com.seanproctor.datatable.material3.DataTable
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -193,11 +172,6 @@ fun RemessasScreen(modifier: Modifier = Modifier, viewModel: RemessasViewModel =
                         }) {
                             Text("Atualizar")
                         }
-                        /*IconButton(onClick = {
-                            scaffoldNavigation.navigateTo(SupportingPaneScaffoldRole.Supporting)
-                        }) {
-                            Icon(Icons.Rounded.Filter, null)
-                        }*/
                     }
                     ManagementResourceUiState(
                         modifier.fillMaxSize().align(Alignment.CenterHorizontally),
@@ -217,31 +191,49 @@ fun RemessasScreen(modifier: Modifier = Modifier, viewModel: RemessasViewModel =
                                             }?.map { it.orderCode } ?: emptyList())
                                         })
                                     },
-                                    DataColumn {
+                                    DataColumn(
+                                        alignment = Alignment.Center
+                                    ) {
                                         Text("Codigo Pedido")
                                     },
-                                    DataColumn {
+                                    DataColumn(
+                                        alignment = Alignment.Center
+                                    ) {
                                         Text("Codigo Cliente")
                                     },
-                                    DataColumn {
+                                    DataColumn(
+                                        alignment = Alignment.Center
+                                    ) {
                                         Text("Nome")
                                     },
-                                    DataColumn {
+                                    DataColumn(
+                                        alignment = Alignment.Center
+                                    ) {
                                         Text("Operacao")
                                     },
-                                    DataColumn {
+                                    DataColumn(
+                                        alignment = Alignment.Center
+                                    ) {
                                         Text("Forma Pagamento")
                                     },
-                                    DataColumn {
+                                    DataColumn(
+                                        alignment = Alignment.Center
+                                    ) {
                                         Text("Vendedor")
                                     },
-                                    DataColumn {
+                                    DataColumn(
+                                        alignment = Alignment.Center
+                                    ) {
                                         Text("Bairro")
                                     },
-                                    DataColumn {
+                                    DataColumn(
+                                        alignment = Alignment.Center
+                                    ) {
                                         Text("Cidade")
                                     },
-                                    DataColumn {
+                                    DataColumn(
+                                        alignment = Alignment.Center
+                                    ) {
                                         Text("Valor")
                                     },
                                 )

@@ -1,12 +1,11 @@
-package br.com.kaskin.roteirizador.features.remessas
+package br.com.kaskin.roteirizador.features.remessas.data
 
 import br.com.kaskin.roteirizador.data.ApiConnector
+import br.com.kaskin.roteirizador.features.remessas.models.CostumerListItem
 import br.com.kaskin.roteirizador.shared.extensions.format
 import br.com.kaskin.roteirizador.shared.extensions.now
 import io.ktor.client.call.body
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.utils.HttpResponseReceiveFail
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.appendPathSegments

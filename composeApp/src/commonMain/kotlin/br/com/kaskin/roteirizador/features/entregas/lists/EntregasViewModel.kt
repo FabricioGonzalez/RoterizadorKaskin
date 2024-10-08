@@ -1,9 +1,13 @@
-package br.com.kaskin.roteirizador.features.entregas
+package br.com.kaskin.roteirizador.features.entregas.lists
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.kaskin.roteirizador.features.entregas.data.EntregasLoader
+import br.com.kaskin.roteirizador.features.entregas.models.Delivery
+import br.com.kaskin.roteirizador.features.remessas.models.CostumerListItem
 import br.com.kaskin.roteirizador.shared.snackbar.SnackbarController
 import br.com.kaskin.roteirizador.shared.snackbar.SnackbarEvent
+import br.com.kaskin.roteirizador.shared.uistate.ResourceUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +19,9 @@ import kotlinx.datetime.LocalDateTime
 class EntregasViewModel(
     private val entregasLoader: EntregasLoader
 ) : ViewModel() {
-    private val _entregas = MutableStateFlow<List<Delivery>>(emptyList())
+    private val _entregas = MutableStateFlow<ResourceUiState<List<Delivery>>>(
+        ResourceUiState.Idle
+    )
     val entregas = _entregas.asStateFlow()
 
 
@@ -25,10 +31,14 @@ class EntregasViewModel(
             is EntregasViewIntents.loadDeliveries -> {
                 viewModelScope.launch {
                     _entregas.update {
+                        ResourceUiState.Loading
+                    }
+                    _entregas.update {
                         entregasLoader.loadDeliveries(
                             dataInicio = intents.dataInicio,
                             dataFim = intents.dataFim
-                        )
+                        ).takeIf { it.isNotEmpty() }
+                            ?.let { ResourceUiState.Success(it) } ?: ResourceUiState.Error("Vazio")
                     }
                 }
             }

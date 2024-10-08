@@ -17,9 +17,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import br.com.kaskin.roteirizador.features.clientes.CostumerScreen
-import br.com.kaskin.roteirizador.features.entregas.EntregasScreen
-import br.com.kaskin.roteirizador.features.remessas.RemessasScreen
+import br.com.kaskin.roteirizador.features.entregas.details.EntregaDetailScreen
+import br.com.kaskin.roteirizador.features.entregas.lists.EntregasScreen
+import br.com.kaskin.roteirizador.features.remessas.remessas.RemessasScreen
 import br.com.kaskin.roteirizador.features.roteirizador.RoteirizadorScreen
 import br.com.kaskin.roteirizador.features.settings.SettingsScreen
 import br.com.kaskin.roteirizador.shared.AppBarState
@@ -141,6 +143,10 @@ internal fun App(isDark: Boolean) = AppTheme(isDark = isDark) {
                 composable<NavigationPoints.Settings> {
                     SettingsScreen()
                 }
+                composable<NavigationPoints.EntregaDetails> {
+                    val navInfo = it.toRoute<NavigationPoints.EntregaDetails>()
+                    EntregaDetailScreen()
+                }
             }
         }
     }
@@ -161,6 +167,9 @@ sealed interface NavigationPoints {
 
     @Serializable
     data object Settings : NavigationPoints
+
+    @Serializable
+    data class EntregaDetails(val code: Int) : NavigationPoints
 }
 
 data class NavItem(

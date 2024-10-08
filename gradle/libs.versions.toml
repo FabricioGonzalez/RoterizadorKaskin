@@ -1,10 +1,10 @@
 [versions]
 
 kotlin = "2.0.20"
-compose = "1.7.0-beta02"
+compose = "1.7.0-rc01"
 agp = "8.5.2"
 androidx-activityCompose = "1.9.2"
-androidx-uiTest = "1.7.2"
+androidx-uiTest = "1.7.3"
 napier = "2.7.1"
 kotlinx-coroutines = "1.9.0"
 ktor = "3.0.0-rc-1"
@@ -12,7 +12,7 @@ kotlinx-serialization = "1.7.2"
 kotlinx-datetime = "0.6.1"
 koin = "4.0.0-RC2"
 webview = "1.9.20"
-adaptive = "1.0.0-alpha03"
+adaptive = "1.0.0-rc01"
 lifecycle = "2.8.2"
 navigation = "2.8.0-alpha10"
 okio = "3.9.0"
@@ -39,9 +39,9 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-content-negociation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
-ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
-ktor-client-curl = { module = "io.ktor:ktor-client-curl", version.ref = "ktor" }
-ktor-client-winhttp = { module = "io.ktor:ktor-client-winhttp", version.ref = "ktor" }
+#ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
+#ktor-client-curl = { module = "io.ktor:ktor-client-curl", version.ref = "ktor" }
+#ktor-client-winhttp = { module = "io.ktor:ktor-client-winhttp", version.ref = "ktor" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }

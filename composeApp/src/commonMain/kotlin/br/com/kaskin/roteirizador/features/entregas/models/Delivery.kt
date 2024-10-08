@@ -1,4 +1,4 @@
-package br.com.kaskin.roteirizador.features.entregas
+package br.com.kaskin.roteirizador.features.entregas.models
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable

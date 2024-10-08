@@ -11,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
+import roterizador_kaskin.composeapp.generated.resources.Res
+import roterizador_kaskin.composeapp.generated.resources.error_template_button
 
 @Composable
 fun ErrorTemplate(
@@ -34,7 +37,7 @@ fun ErrorTemplate(
                 onClick = onTryAgain
             ) {
                 Text(
-                    text = "Try Again",
+                    text = stringResource(Res.string.error_template_button),
                     style = MaterialTheme.typography.displaySmall
                 )
             }

@@ -7,7 +7,6 @@ import br.com.kaskin.roteirizador.shared.ApiConstants
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
@@ -22,16 +21,16 @@ import io.ktor.client.request.post
 import io.ktor.client.request.prepareGet
 import io.ktor.client.request.put
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsChannel
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.readRemaining
-import io.ktor.utils.io.readUTF8Line
+import io.ktor.utils.io.availableForRead
+import io.ktor.utils.io.readAvailable
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 class ApiConnector(store: DataStore<Preferences>) {
-    private var url = store.data.map { it[stringPreferencesKey("api_url")] }
-    private val client = HttpClient() {
+    private val url = store.data.map { it[stringPreferencesKey("api_url")] }
+    private var client = HttpClient {
         install(SSE) {
             showCommentEvents()
             showRetryEvents()
@@ -54,19 +53,23 @@ class ApiConnector(store: DataStore<Preferences>) {
         }
     }
 
-    suspend <T> fun getAsync(
+    suspend fun getAsync(
         block: HttpRequestBuilder.() -> Unit,
-        onRecieved: (T) -> Unit
+        onRecieved: suspend (String) -> Unit
     ) {
-        client.prepareGet(url.firstOrNull() ?: ApiConstants.ApiUrl)
-            .execute { httpResponse ->
-                val channel: ByteReadChannel = httpResponse.body()
+        client.prepareGet(url.firstOrNull() ?: ApiConstants.ApiUrl, block)
+            .execute { response ->
+                val channel = response.bodyAsChannel()
+
                 while (!channel.isClosedForRead) {
+                    val buffer = ByteArray(channel.availableForRead)
+                    val read = channel.readAvailable(buffer)
+                    if (read == -1) break
 
-                    channel.readUTF8Line()?.let()
-                    onRecieved()
+                    val jsonString =
+                        buffer.decodeToString().takeIf { it.isNotEmpty() }?.removeRange(0, 1) ?: ""
+                    onRecieved(jsonString)
                 }
-
             }
     }
 

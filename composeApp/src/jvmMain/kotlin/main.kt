@@ -29,12 +29,15 @@ import org.jetbrains.jewel.foundation.theme.JewelTheme
 import org.jetbrains.jewel.intui.standalone.styling.dark
 import org.jetbrains.jewel.intui.standalone.styling.light
 import org.jetbrains.jewel.intui.standalone.theme.IntUiTheme
+import org.jetbrains.jewel.intui.standalone.theme.dark
 import org.jetbrains.jewel.intui.standalone.theme.darkThemeDefinition
 import org.jetbrains.jewel.intui.standalone.theme.default
+import org.jetbrains.jewel.intui.standalone.theme.light
 import org.jetbrains.jewel.intui.standalone.theme.lightThemeDefinition
 import org.jetbrains.jewel.intui.window.decoratedWindow
 import org.jetbrains.jewel.intui.window.styling.dark
 import org.jetbrains.jewel.intui.window.styling.light
+import org.jetbrains.jewel.intui.window.styling.lightWithLightHeader
 import org.jetbrains.jewel.ui.ComponentStyling
 import org.jetbrains.jewel.ui.component.Icon
 import org.jetbrains.jewel.ui.component.IconButton
@@ -89,25 +92,16 @@ fun main() {
         }
 
         var theme by remember { mutableStateOf(IntUiThemes.Dark) }
-        val themeDefinition =
-            if (theme.isDark()) {
-                JewelTheme.darkThemeDefinition()
-            } else {
-                JewelTheme.lightThemeDefinition()
-            }
 
         IntUiTheme(
-            theme = themeDefinition,
-            styling =
-            ComponentStyling
-                .default()
-                .decoratedWindow(
-                    titleBarStyle =
-                    when (theme) {
-                        IntUiThemes.Light -> TitleBarStyle.light()
-                        IntUiThemes.Dark -> TitleBarStyle.dark()
-                    }
-                ),
+            theme = when {
+                theme.isDark() -> JewelTheme.darkThemeDefinition()
+                else -> JewelTheme.lightThemeDefinition()
+            },
+            styling = when (theme) {
+                IntUiThemes.Light -> ComponentStyling.light()
+                IntUiThemes.Dark -> ComponentStyling.dark()
+            },
             swingCompatMode = true,
         ) {
             DecoratedWindow(
@@ -121,14 +115,18 @@ fun main() {
                         appBar = {
 
                         },
-                        changeTheme = {
-                            theme = when (theme) {
+                        changeTheme = { newTheme ->
+                            theme = when (newTheme) {
                                 IntUiThemes.Light -> IntUiThemes.Dark
                                 IntUiThemes.Dark -> IntUiThemes.Light
                             }
                         })
                     App(theme.isDark())
                 },
+                style = when (theme) {
+                    IntUiThemes.Light -> DecoratedWindowStyle.light()
+                    IntUiThemes.Dark -> DecoratedWindowStyle.dark()
+                }
             )
         }
         DisposableEffect(Unit) {
@@ -155,7 +153,7 @@ fun DecoratedWindowScope.TitleBarView(
 ) {
     TitleBar(
         Modifier.newFullscreenControls(), style = when (theme) {
-            IntUiThemes.Light -> TitleBarStyle.light()
+            IntUiThemes.Light -> TitleBarStyle.lightWithLightHeader()
             IntUiThemes.Dark -> TitleBarStyle.dark()
         }
     ) {

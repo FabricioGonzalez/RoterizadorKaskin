@@ -1,7 +1,9 @@
-package br.com.kaskin.roteirizador.features.remessas
+package br.com.kaskin.roteirizador.features.remessas.remessas
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.kaskin.roteirizador.features.remessas.data.RemessaLoader
+import br.com.kaskin.roteirizador.features.remessas.models.CostumerListItem
 import br.com.kaskin.roteirizador.shared.snackbar.SnackbarController
 import br.com.kaskin.roteirizador.shared.snackbar.SnackbarEvent
 import br.com.kaskin.roteirizador.shared.uistate.ResourceUiState
@@ -25,30 +27,30 @@ class RemessasViewModel(private val remessaLoader: RemessaLoader) : ViewModel() 
     val vendedores = _remessas.filter { it is ResourceUiState.Success }
         .map { (it as ResourceUiState.Success).data }
         .transform { remessa ->
-        emit(remessa.distinctBy { it.vendedor }
-            .map { it.vendedor })
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+            emit(remessa.distinctBy { it.vendedor }
+                .map { it.vendedor })
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val bairros = _remessas.filter { it is ResourceUiState.Success }
         .map { (it as ResourceUiState.Success).data }
         .transform { remessa ->
-        emit(remessa.distinctBy { it.bairro }
-            .map { it.bairro })
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+            emit(remessa.distinctBy { it.bairro }
+                .map { it.bairro })
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val cidades = _remessas.filter { it is ResourceUiState.Success }
         .map { (it as ResourceUiState.Success).data }
         .transform { remessa ->
-        emit(remessa.distinctBy { it.cidade }
-            .map { it.cidade })
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+            emit(remessa.distinctBy { it.cidade }
+                .map { it.cidade })
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun handleIntent(intents: RemessasViewIntents) {
         when (intents) {
             is RemessasViewIntents.loadRemessas -> {
                 viewModelScope.launch {
                     _remessas.update {
-                       ResourceUiState.Loading
+                        ResourceUiState.Loading
                     }
                     _remessas.update {
                         remessaLoader.loadRemessas(
@@ -89,6 +91,16 @@ class RemessasViewModel(private val remessaLoader: RemessaLoader) : ViewModel() 
                         }
                 }
             }
+
+            /*is RemessasViewIntents.orderRemessasAscending<*> ->
+                if(_remessas.value is ResourceUiState.Success){
+                    (_remessas.value as ResourceUiState.Success<List<CostumerListItem>>)
+                        .copy((_remessas.value as ResourceUiState.Success<List<CostumerListItem>>)
+                            .data.sortedBy(intents::predicate))
+                }
+            is RemessasViewIntents.orderRemessasDescending<*> -> {
+
+            }*/
         }
     }
 }
@@ -96,6 +108,14 @@ class RemessasViewModel(private val remessaLoader: RemessaLoader) : ViewModel() 
 sealed interface RemessasViewIntents {
     data class updateRemessas(val remessas: List<Int>) : RemessasViewIntents
     data class syncRemessas(val remessas: List<Int>) : RemessasViewIntents
+    /*
+    data class orderRemessasDescending<R:Comparable<R>>(val predicate:  CostumerListItem.() -> R) :
+        RemessasViewIntents
+
+    data class orderRemessasAscending<R:Comparable<R>>(val predicate: CostumerListItem.() -> R) :
+        RemessasViewIntents
+        */
+
     data class loadRemessas(val dataInicio: LocalDateTime, val dataFim: LocalDateTime) :
         RemessasViewIntents
 }

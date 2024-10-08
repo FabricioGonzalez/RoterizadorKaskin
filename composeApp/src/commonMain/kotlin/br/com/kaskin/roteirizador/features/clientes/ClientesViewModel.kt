@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.kaskin.roteirizador.shared.snackbar.SnackbarController
 import br.com.kaskin.roteirizador.shared.snackbar.SnackbarEvent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 
@@ -31,13 +35,14 @@ class ClientesViewModel(private val costumerLoader: CostumerLoader) : ViewModel(
                     costumerLoader.syncCostumers(
                         dataInicio = intent.dataInicio,
                         dataFim = intent.dataFim
-                    ).onSuccess {
-                        SnackbarController.sendEvent(
-                            SnackbarEvent("Clientes Sincronizados")
-                        )
-                    }.onFailure {
+                    ).catch {
                         SnackbarController.sendEvent(
                             SnackbarEvent("Falha ao sincronizar clientes")
+                        )
+                    }.flowOn(Dispatchers.Main)
+                        .collect {
+                        SnackbarController.sendEvent(
+                            SnackbarEvent("Cliente Sincronizado ${it?.codigo} - ${it?.nome}")
                         )
                     }
                 }

@@ -1,4 +1,4 @@
-package br.com.kaskin.roteirizador.features.remessas
+package br.com.kaskin.roteirizador.features.remessas.models
 
 import kotlinx.serialization.Serializable
 

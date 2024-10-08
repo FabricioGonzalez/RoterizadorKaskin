@@ -1,6 +1,7 @@
-package br.com.kaskin.roteirizador.features.entregas
+package br.com.kaskin.roteirizador.features.entregas.data
 
 import br.com.kaskin.roteirizador.data.ApiConnector
+import br.com.kaskin.roteirizador.features.entregas.models.Delivery
 import br.com.kaskin.roteirizador.shared.extensions.format
 import br.com.kaskin.roteirizador.shared.extensions.now
 import io.ktor.client.call.body

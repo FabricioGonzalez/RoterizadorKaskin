@@ -4,4 +4,8 @@
     <string name="run">Run</string>
     <string name="stop">Stop</string>
     <string name="theme">Theme</string>
+    <string name="error_template_message">Algo de errado não está certo</string>
+    <string name="error_template_button">Tentar novamente</string>
+    <string name="empty_template_message">Não há informação para mostrar</string>
+    <string name="empty_template_button">Verificar novamente</string>
 </resources>
